@@ -7,7 +7,8 @@
     "build": "tsc",
     "start": "ts-node-dev",
     "dev": "ts-node-dev --respawn",
-    "anvil": "ts-node anvil-setup-scripts/anvil.ts"
+    "anvil": "ts-node anvil-setup-scripts/anvil.ts",
+    "test-contract": "ts-node anvil-contract-setup.ts"
   },
   "keywords": [],
   "author": "",

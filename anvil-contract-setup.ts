@@ -1,6 +1,8 @@
 import { createAnvil } from "@viem/anvil";
 import { createPublicClient, createWalletClient, http } from "viem";
 import { foundry } from "viem/chains";
+import { CreateAnvilClients } from "./anvil-setup-scripts/AnvilClients";
+
 interface AccountWithBalance {
   address: `0x${string}`;
   balance: string;
@@ -53,6 +55,17 @@ class AnvilManager {
     return accountsWithBalances;
   }
 
+  async getProvider() {
+    const { publicClient, walletClient } = CreateAnvilClients({ port: this.options.port });
+    return { publicClient, walletClient };
+  }
+
+  async getBlockerNumber(): Promise<BigInt> {
+    const { publicClient } = await this.getProvider();
+    let blockNumber = await publicClient.getBlockNumber();
+    return blockNumber;
+  }
+
   async stop() {
     console.log("Stopping Anvil...");
     await this.anvil.stop();
@@ -64,13 +77,16 @@ async function main() {
   await anvilManager.start();
 
   // Get and display all accounts with balances
-  const accounts = await anvilManager.getAccounts();
-  console.log("All accounts on the network:");
-  accounts.forEach((account: AccountWithBalance, index: number) => {
-    console.log(`${index + 1}. Address: ${account.address}`);
-    console.log(`   Balance: ${account.balance} wei`);
-    console.log("------------------------");
-  });
+  // const accounts = await anvilManager.getAccounts();
+    const accounts = await anvilManager.getBlockerNumber();
+
+  console.log(accounts)
+  // console.log("All accounts on the network:");
+  // accounts.forEach((account: AccountWithBalance, index: number) => {
+  //   console.log(`${index + 1}. Address: ${account.address}`);
+  //   console.log(`   Balance: ${account.balance} wei`);
+  //   console.log("------------------------");
+  // });
   
   // Handle graceful shutdown
   process.on('SIGINT', async () => {
