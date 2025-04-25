@@ -8,7 +8,7 @@
     "start": "ts-node-dev",
     "dev": "ts-node-dev --respawn",
     "anvil": "ts-node anvil-setup-scripts/anvil.ts",
-    "test-contract": "ts-node anvil-contract-setup.ts"
+    "test-contract": "ts-node deploy-contract.ts"
   },
   "keywords": [],
   "author": "",

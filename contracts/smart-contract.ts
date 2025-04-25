@@ -1,6 +1,6 @@
 import { hstBytecode, hstAbi } from "./smart-contract-constants.json";
 import { CreateAnvilClients } from "../anvil-utils/AnvilClients";
-import { AnvilManager } from "../anvil-contract-setup";
+import { AnvilManager } from "../deploy-contract";
 
 const hstFactory = {
   initialAmount: 10,
