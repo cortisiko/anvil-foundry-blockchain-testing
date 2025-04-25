@@ -31,9 +31,7 @@ const hstFactory = {
  * @returns The contract address
  */
 async function deployContract(anvilManager: AnvilManager) {
-  const { walletClient, publicClient } = CreateAnvilClients({
-    port: anvilManager.port,
-  });
+  const { walletClient, publicClient } = CreateAnvilClients();
   const accountOne = await anvilManager.getFirstAccount();
   // console.log("Deploying from account:", accountOne);
 

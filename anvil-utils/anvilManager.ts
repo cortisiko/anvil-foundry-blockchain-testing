@@ -34,9 +34,7 @@ class AnvilManager {
    * @returns The public and wallet clients
    */
   async getProvider() {
-    const { publicClient, walletClient } = CreateAnvilClients({
-      port: this.port,
-    });
+    const { publicClient, walletClient } = CreateAnvilClients();
     return { publicClient, walletClient };
   }
 
