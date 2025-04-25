@@ -2,6 +2,20 @@ import { hstBytecode, hstAbi } from "./smart-contract-constants.json";
 import { CreateAnvilClients } from "../anvil-utils/AnvilClients";
 import { AnvilManager } from "../deploy-contract";
 
+/*
+  This is a simple ERC20 token contract that is used to demonstrate how to deploy a contract to anvil.
+  The contract is deployed to the first account in the anvil network.
+  @param anvilManager - The anvil manager instance
+  @returns The contract address
+  */
+
+  /*
+  This is the factory object that is used to deploy the contract.
+  @param initialAmount - The initial amount of the token
+  @param tokenName - The name of the token
+  @param decimalUnits - The number of decimal units the token has
+  @param tokenSymbol - The symbol of the token
+  */
 const hstFactory = {
   initialAmount: 10,
   tokenName: "CurtToken",
@@ -11,10 +25,13 @@ const hstFactory = {
   abi: hstAbi,
 };
 
+/**
+ * Deploys a contract to the Anvil network.
+ * @param anvilManager - The Anvil manager instance
+ * @returns The contract address
+ */
 async function deployContract(anvilManager: AnvilManager) {
-  const { walletClient, publicClient } = CreateAnvilClients({
-    port: anvilManager.port,
-  });
+  const { walletClient, publicClient } = CreateAnvilClients();
   const accountOne = await anvilManager.getFirstAccount();
   // console.log("Deploying from account:", accountOne);
 
