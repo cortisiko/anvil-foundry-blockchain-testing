@@ -1,14 +1,14 @@
 import { createPublicClient, createWalletClient, http } from "viem";
-import { foundry } from "viem/chains";
+import { CUSTOM_CHAIN } from "./config";
 
 function CreateAnvilClients({ port }: { port: number }) {
   const publicClient = createPublicClient({
-    chain: foundry,
+    chain: CUSTOM_CHAIN,
     transport: http(`http://localhost:${port}`),
   });
 
   const walletClient = createWalletClient({
-    chain: foundry,
+    chain: CUSTOM_CHAIN,
     transport: http(`http://localhost:${port}`),
   });
 

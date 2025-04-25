@@ -1,7 +1,7 @@
 import { createAnvil } from "@viem/anvil";
-import { createPublicClient, createWalletClient, http } from "viem";
-import { foundry } from "viem/chains";
 import { CreateAnvilClients } from "./anvil-setup-scripts/AnvilClients";
+import { deployContract } from "./smart-contract";
+import { ANVIL_CONFIG } from "./anvil-setup-scripts/config";
 
 interface AccountWithBalance {
   address: `0x${string}`;
@@ -10,15 +10,16 @@ interface AccountWithBalance {
 
 class AnvilManager {
   private anvil;
-  private options = {
-    forkUrl: "https://mainnet.base.org",
-    forkBlockNumber: 29285448,
-    chainId: 1337,
-    port: 8545
-  };
 
   constructor() {
-    this.anvil = createAnvil(this.options);
+    this.anvil = createAnvil(ANVIL_CONFIG);
+  }
+
+  get port() {
+    return ANVIL_CONFIG.port;
+  }
+  get logs() {
+    return this.anvil.logs;
   }
 
   async start() {
@@ -27,36 +28,8 @@ class AnvilManager {
     console.log("Anvil is running. Press Ctrl+C to stop.");
   }
 
-  async getAccounts(): Promise<AccountWithBalance[]> {
-    const publicClient = createPublicClient({
-      chain: foundry,
-      transport: http(`http://localhost:${this.options.port}`)
-    });
-
-    const walletClient = createWalletClient({
-      chain: foundry,
-      transport: http(`http://localhost:${this.options.port}`)
-    });
-
-    // Get all accounts from the wallet client
-    const accounts = await walletClient.getAddresses();
-
-    // Get balances for all accounts
-    const accountsWithBalances = await Promise.all(
-      accounts.map(async (address) => {
-        const balance = await publicClient.getBalance({ address });
-        return {
-          address,
-          balance: balance.toString()
-        };
-      })
-    );
-
-    return accountsWithBalances;
-  }
-
   async getProvider() {
-    const { publicClient, walletClient } = CreateAnvilClients({ port: this.options.port });
+    const { publicClient, walletClient } = CreateAnvilClients({ port: this.port });
     return { publicClient, walletClient };
   }
 
@@ -64,6 +37,11 @@ class AnvilManager {
     const { publicClient } = await this.getProvider();
     let blockNumber = await publicClient.getBlockNumber();
     return blockNumber;
+  }
+  async getFirstAccount(): Promise<`0x${string}`> {
+    const {walletClient} = await this.getProvider();
+    const accounts = await walletClient.getAddresses();
+    return accounts[0]
   }
 
   async stop() {
@@ -76,17 +54,18 @@ async function main() {
   const anvilManager = new AnvilManager();
   await anvilManager.start();
 
-  // Get and display all accounts with balances
-  // const accounts = await anvilManager.getAccounts();
     const accounts = await anvilManager.getBlockerNumber();
+    const accountOne = await anvilManager.getFirstAccount();
 
-  console.log(accounts)
-  // console.log("All accounts on the network:");
-  // accounts.forEach((account: AccountWithBalance, index: number) => {
-  //   console.log(`${index + 1}. Address: ${account.address}`);
-  //   console.log(`   Balance: ${account.balance} wei`);
-  //   console.log("------------------------");
-  // });
+  // console.log(accounts)
+  // console.log(accountsWithBalances)
+  console.log("Account One:")
+  console.log(accountOne)
+
+  const deployedContract = await deployContract(anvilManager);
+  console.log("Contract Address:", deployedContract);
+  // console.log("Anvil Logs:", anvilManager.logs);
+ 
   
   // Handle graceful shutdown
   process.on('SIGINT', async () => {
@@ -96,3 +75,5 @@ async function main() {
 }
 
 main().catch(console.error);
+
+export { AnvilManager };
