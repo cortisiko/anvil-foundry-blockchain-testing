@@ -32,12 +32,11 @@ const hstFactory = {
  */
 async function deployContract(anvilManager: AnvilManager) {
   const { walletClient, publicClient } = CreateAnvilClients();
-  const accountOne = await anvilManager.getFirstAccount();
-  // console.log("Deploying from account:", accountOne);
+  const account = walletClient.account;
 
   const hash = await walletClient.deployContract({
-    account: accountOne,
     abi: hstFactory.abi,
+    account,
     bytecode: hstFactory.bytecode as `0x${string}`,
     args: [
       hstFactory.initialAmount,
@@ -45,8 +44,8 @@ async function deployContract(anvilManager: AnvilManager) {
       hstFactory.decimalUnits,
       hstFactory.tokenSymbol,
     ],
-  });
-  // console.log("Deployment transaction hash:", hash);
+  }); 
+   // console.log("Deployment transaction hash:", hash);
 
   // Wait for the transaction to be mined
   const receipt = await publicClient.waitForTransactionReceipt({ hash });

@@ -34,8 +34,8 @@ class AnvilManager {
    * @returns The public and wallet clients
    */
   async getProvider() {
-    const { publicClient, walletClient } = CreateAnvilClients();
-    return { publicClient, walletClient };
+    const { publicClient, walletClient, testClient } = CreateAnvilClients();
+    return { publicClient, walletClient, testClient };
   }
 
   /**
@@ -56,6 +56,21 @@ class AnvilManager {
     const { walletClient } = await this.getProvider();
     const accounts = await walletClient.getAddresses();
     return accounts[0];
+  }
+
+  async setBalance() {
+    const { testClient, publicClient } = await this.getProvider();
+    const account = await this.getFirstAccount();
+    
+    if (!account) throw new Error("No account available");
+    const balanceInWei = BigInt('0x100000000000000000000');
+
+    await testClient.setBalance({ 
+      address: account,
+      value: balanceInWei
+    });
+    const balance = await publicClient.getBalance({ address: account });
+    console.log("Balance set to 1000000000000000000n", balance);
   }
 
   /**
