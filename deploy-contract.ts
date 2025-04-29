@@ -12,7 +12,9 @@ async function main() {
   // console.log(accountsWithBalances)
   console.log("Account One:")
   console.log(accountOne)
-
+  console.log("Setting balance")
+  await anvilManager.setBalance();
+  
   const deployedContract = await deployContract(anvilManager);
   console.log("Contract Address:", deployedContract);
   // console.log("Anvil Logs:", anvilManager.logs);
