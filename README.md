@@ -21,6 +21,11 @@ cd anvil-foundry-testing
 npm install
 ```
 
+3. Install foundry:
+```bash
+yarn install-foundry
+```
+
 ## Project Structure
 
 ```
